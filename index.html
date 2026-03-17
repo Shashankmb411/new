@@ -1,11 +1,159 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title> my web site </title>
-</head>
-<body>
-  <h1>new line for cheack</h1>
-</body>
+<title>AI Chatbot</title>
 
-  
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#0f172a;
+color:white;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+}
+
+/* CHAT CONTAINER */
+.chat-container{
+width:400px;
+height:600px;
+background:#1e293b;
+border-radius:15px;
+display:flex;
+flex-direction:column;
+box-shadow:0 0 20px rgba(0,0,0,0.5);
+overflow:hidden;
+}
+
+/* HEADER */
+.chat-header{
+background:#020617;
+padding:15px;
+font-size:18px;
+font-weight:bold;
+text-align:center;
+}
+
+/* MESSAGES */
+.chat-box{
+flex:1;
+padding:15px;
+overflow-y:auto;
+}
+
+/* MESSAGE STYLE */
+.user{
+text-align:right;
+margin:10px;
+color:#38bdf8;
+}
+
+.bot{
+text-align:left;
+margin:10px;
+color:#4ade80;
+}
+
+/* INPUT AREA */
+.input-area{
+display:flex;
+border-top:1px solid #333;
+}
+
+input{
+flex:1;
+padding:15px;
+border:none;
+outline:none;
+background:#0f172a;
+color:white;
+}
+
+button{
+background:#38bdf8;
+border:none;
+padding:15px;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="chat-container">
+
+<div class="chat-header">
+🤖 My AI Chatbot
+</div>
+
+<div class="chat-box" id="chatBox">
+<div class="bot">Hello! Ask me anything 🚀</div>
+</div>
+
+<div class="input-area">
+<input id="input" placeholder="Type a message...">
+<button onclick="sendMessage()">Send</button>
+</div>
+
+</div>
+
+<script>
+
+const input = document.getElementById("input");
+
+input.addEventListener("keypress", function(e){
+if(e.key === "Enter"){
+sendMessage();
+}
+});
+
+async function sendMessage(){
+
+let msg = input.value.trim();
+let chat = document.getElementById("chatBox");
+
+if(msg === "") return;
+
+/* USER */
+chat.innerHTML += `<div class="user">${msg}</div>`;
+input.value="";
+chat.scrollTop = chat.scrollHeight;
+
+/* TYPING */
+chat.innerHTML += `<div id="typing" class="bot">Typing...</div>`;
+chat.scrollTop = chat.scrollHeight;
+
+try{
+
+const response = await fetch("http://localhost:3000/chat",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:msg})
+});
+
+const data = await response.json();
+
+document.getElementById("typing").remove();
+
+/* BOT */
+chat.innerHTML += `<div class="bot">${data.reply}</div>`;
+chat.scrollTop = chat.scrollHeight;
+
+}catch{
+
+document.getElementById("typing").remove();
+chat.innerHTML += `<div class="bot">Error connecting AI</div>`;
+
+}
+
+}
+
+</script>
+
+</body>
 </html>
