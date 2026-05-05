@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codeword File Share - Photos, Videos & Text</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { font-family: 'Inter', sans-serif; }
+
+        .gradient-bg { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .glass { 
+            background: rgba(255,255,255,0.92); 
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+
+        .glass-dark {
+            background: rgba(17, 24, 39, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .tab-active { 
+            border-bottom: 3px solid #667eea; 
+            color: #667eea;
+            background: linear-gradient(to top, rgba(102,126,234,0.1), transparent);
+        }
+        .tab-inactive { 
+            color: #6b7280; 
+            transition: all 0.3s ease;
+        }
+        .tab-inactive:hover { 
+            color: #374151; 
+            background: rgba(102,126,234,0.05);
+        }
+
+        .drop-zone { 
+            border: 3px dashed #cbd5e1; 
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+        .drop-zone::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1));
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .drop-zone:hover::before { opacity: 1; }
+        .drop-zone:hover { 
+            border-color: #667eea; 
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(102,126,234,0.15);
+        }
+        .drop-zone.dragover { 
+            border-color: #667eea; 
+            background: rgba(102,126,234,0.08);
+            transform: scale(1.02);
+            box-shadow: 0 0 0 4px rgba(102,126,234,0.2);
+        }
+
+        .code-display { 
+            font-family: 'Courier New', monospace; 
+            letter-spacing: 12px;
+            text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+        }
+
+        @keyframes slideIn { 
+            from { opacity: 0; transform: translateY(30px) scale(0.95); } 
+            to { opacity: 1; transform: translateY(0) scale(1); } 
+        }
+        .slide-in { animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(102,126,234,0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(102,126,234,0); }
+        }
+        .pulse-glow { animation: pulse-glow 2s infinite; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .float { animation: float 3s ease-in-out infinite; }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+        .shimmer {
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0.3); opacity: 0; }
+            50% { transform: scale(1.05); }
+            70% { transform: scale(0.9); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .bounce-in { animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .shake { animation: shake 0.5s ease-in-out; }
+
+        @keyframes rotateIn {
+            from { transform: rotate(-180deg) scale(0); opacity: 0; }
+            to { transform: rotate(0) scale(1); opacity: 1; }
+        }
+        .rotate-in { animation: rotateIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+
+        .preview-container { 
+            max-height: 320px; 
+            overflow: hidden; 
+            border-radius: 16px;
+            position: relative;
+        }
+        .preview-container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
+            pointer-events: none;
+        }
+        .preview-container img, .preview-container video { 
+            max-width: 100%; 
+            max-height: 320px; 
+            object-fit: contain;
+            transition: transform 0.3s ease;
+        }
+        .preview-container:hover img, .preview-container:hover video {
+            transform: scale(1.02);
+        }
+
+        .progress-bar { 
+            transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        .toast { 
+            position: fixed; 
+            bottom: 24px; 
+            right: 24px; 
+            transform: translateY(120px) scale(0.9); 
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            z-index: 50;
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
+        }
+        .toast.show { 
+            transform: translateY(0) scale(1); 
+        }
+
+        .file-type-icon { 
+            width: 56px; 
+            height: 56px; 
+            border-radius: 16px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 24px;
+            transition: all 0.3s ease;
+        }
+        .file-type-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+        }
+        .icon-image { background: linear-gradient(135deg, #dbeafe, #bfdbfe); color: #2563eb; }
+        .icon-video { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #db2777; }
+        .icon-audio { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #059669; }
+        .icon-text { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #d97706; }
+        .icon-file { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); color: #6b7280; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s ease;
+        }
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.4);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .card-hover {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+        }
+
+        .text-block {
+            background: linear-gradient(135deg, #fefce8, #fef9c3);
+            border: 2px dashed #fbbf24;
+            transition: all 0.3s ease;
+        }
+        .text-block:focus-within {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            box-shadow: 0 4px 15px rgba(102,126,234,0.4);
+        }
+
+        .feature-card {
+            transition: all 0.4s ease;
+            border: 1px solid transparent;
+        }
+        .feature-card:hover {
+            border-color: rgba(102,126,234,0.2);
+            transform: translateY(-5px);
+        }
+
+        .code-box {
+            background: linear-gradient(135deg, #1e1b4b, #312e81);
+            box-shadow: 0 25px 50px -12px rgba(30, 27, 75, 0.5);
+        }
+
+        .success-ring {
+            animation: successRing 0.6s ease-out;
+        }
+        @keyframes successRing {
+            0% { transform: scale(0); opacity: 0; }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .typing-cursor::after {
+            content: '|';
+            animation: blink 1s infinite;
+        }
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 4px; }
+
+        .upload-type-btn {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        .upload-type-btn.active {
+            border-color: #667eea;
+            background: rgba(102,126,234,0.1);
+            color: #667eea;
+        }
+        .upload-type-btn:hover:not(.active) {
+            border-color: #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .counter-animation {
+            animation: countUp 0.5s ease-out;
+        }
+        @keyframes countUp {
+            from { transform: scale(1.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Floating particles background -->
+    <div class="fixed inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-20 left-10 w-4 h-4 bg-white/10 rounded-full float" style="animation-delay: 0s;"></div>
+        <div class="absolute top-40 right-20 w-6 h-6 bg-white/10 rounded-full float" style="animation-delay: 1s;"></div>
+        <div class="absolute bottom-32 left-1/4 w-3 h-3 bg-white/10 rounded-full float" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/3 right-1/3 w-5 h-5 bg-white/10 rounded-full float" style="animation-delay: 0.5s;"></div>
+    </div>
+
+    <nav class="glass sticky top-0 z-40 border-b border-gray-200/50">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center text-white text-xl shadow-lg shadow-indigo-500/30">
+                    <i class="fas fa-key"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-800">Codeword Share</h1>
+                    <p class="text-xs text-gray-500">Photos, Videos, Text & Files up to 100MB</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <span class="text-sm text-gray-600 hidden sm:flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-full">
+                    <span class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
+                    Server Online
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="max-w-2xl mx-auto px-4 py-8 relative z-10">
+        <!-- Tabs -->
+        <div class="glass rounded-t-2xl flex border-b border-gray-200/50 overflow-hidden">
+            <button onclick="switchTab('upload')" id="tab-upload" class="flex-1 py-4 text-center font-semibold tab-active transition-all duration-300">
+                <i class="fas fa-upload mr-2"></i>Send
+            </button>
+            <button onclick="switchTab('download')" id="tab-download" class="flex-1 py-4 text-center font-semibold tab-inactive transition-all duration-300">
+                <i class="fas fa-download mr-2"></i>Receive
+            </button>
+        </div>
+
+        <div class="glass rounded-b-2xl p-8 shadow-2xl mb-8">
+            <!-- Upload Section -->
+            <div id="section-upload">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Share Anything</h2>
+                    <p class="text-gray-600">Upload files, photos, videos, or paste text. Max <strong class="text-indigo-600">100MB</strong>.</p>
+                </div>
+
+                <!-- Upload Type Selector -->
+                <div id="uploadTypeSelector" class="flex gap-3 mb-6">
+                    <button onclick="setUploadType('file')" id="type-file" class="upload-type-btn active flex-1 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-file-upload"></i> File / Photo / Video
+                    </button>
+                    <button onclick="setUploadType('text')" id="type-text" class="upload-type-btn flex-1 py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2">
+                        <i class="fas fa-keyboard"></i> Text / Message
+                    </button>
+                </div>
+
+                <!-- FILE UPLOAD AREA -->
+                <div id="fileUploadArea">
+                    <div id="dropZone" class="drop-zone rounded-2xl p-12 text-center cursor-pointer bg-gray-50/80 mb-6">
+                        <div class="relative z-10">
+                            <div class="w-20 h-20 bg-gradient-to-br from-indigo-100 to-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4 float">
+                                <i class="fas fa-cloud-upload-alt text-3xl text-indigo-500"></i>
+                            </div>
+                            <p class="font-semibold text-gray-700 text-lg mb-1">Drop your file here</p>
+                            <p class="text-sm text-gray-500">or click to browse • Max 100MB</p>
+                            <div class="flex justify-center gap-4 mt-4 text-2xl text-gray-400">
+                                <i class="fas fa-image hover:text-blue-500 transition"></i>
+                                <i class="fas fa-video hover:text-pink-500 transition"></i>
+                                <i class="fas fa-music hover:text-green-500 transition"></i>
+                                <i class="fas fa-file-alt hover:text-gray-600 transition"></i>
+                            </div>
+                        </div>
+                        <input type="file" id="fileInput" class="hidden">
+                    </div>
+
+                    <!-- File Preview -->
+                    <div id="filePreview" class="hidden mb-6">
+                        <div class="bg-gray-50 rounded-2xl p-5 border border-gray-200">
+                            <div id="previewContent" class="preview-container mb-4 flex justify-center"></div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-3">
+                                    <div id="previewIcon" class="file-type-icon icon-file">
+                                        <i class="fas fa-file"></i>
+                                    </div>
+                                    <div>
+                                        <p id="previewName" class="font-semibold text-gray-800 text-sm"></p>
+                                        <p id="previewSize" class="text-xs text-gray-500"></p>
+                                    </div>
+                                </div>
+                                <button onclick="clearPreview()" class="w-10 h-10 rounded-full bg-red-50 text-red-500 hover:bg-red-100 hover:text-red-700 transition flex items-center justify-center">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TEXT UPLOAD AREA -->
+                <div id="textUploadArea" class="hidden">
+                    <div class="text-block rounded-2xl p-6 mb-6">
+                        <div class="flex items-center gap-2 mb-3 text-amber-700">
+                            <i class="fas fa-pen-fancy"></i>
+                            <span class="font-semibold text-sm">Type or paste your message</span>
+                        </div>
+                        <textarea 
+                            id="textInput" 
+                            rows="8" 
+                            class="w-full bg-transparent border-none resize-none focus:ring-0 text-gray-700 placeholder-gray-400 text-base leading-relaxed"
+                            placeholder="Write your message here... It can be anything - notes, code, links, secrets..."
+                            oninput="updateTextStats()"></textarea>
+                        <div class="flex justify-between items-center mt-3 pt-3 border-t border-amber-200/50">
+                            <span id="textStats" class="text-xs text-amber-600">0 characters</span>
+                            <button onclick="clearText()" class="text-xs text-amber-600 hover:text-amber-800 transition">
+                                <i class="fas fa-eraser mr-1"></i>Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Progress -->
+                <div id="uploadProgress" class="hidden mb-6">
+                    <div class="bg-gray-50 rounded-xl p-4">
+                        <div class="flex justify-between text-sm font-medium text-gray-700 mb-2">
+                            <span id="progressStatus" class="flex items-center gap-2">
+                                <i class="fas fa-circle-notch fa-spin text-indigo-500"></i>
+                                Uploading...
+                            </span>
+                            <span id="progressPercent" class="text-indigo-600 font-bold">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+                            <div id="progressBar" class="progress-bar h-3 rounded-full" style="width: 0%"></div>
+                        </div>
+                        <p id="progressDetails" class="text-xs text-gray-500 mt-2 text-center"></p>
+                    </div>
+                </div>
+
+                <button id="uploadBtn" onclick="uploadContent()" class="w-full py-4 btn-primary text-white rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" disabled>
+                    <i class="fas fa-paper-plane mr-2"></i>Upload & Get Code
+                </button>
+
+                <!-- Success State -->
+                <div id="uploadSuccess" class="hidden text-center">
+                    <div class="success-ring w-24 h-24 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-green-500/20">
+                        <i class="fas fa-check text-4xl text-green-500"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">Uploaded Successfully!</h3>
+                    <p class="text-gray-600 mb-8">Share this secret codeword with anyone, anywhere.</p>
+
+                    <div class="code-box rounded-2xl p-8 mb-6 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                        <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
+                        <p class="text-sm text-indigo-300 mb-3 uppercase tracking-wider font-medium">Your Secret Codeword</p>
+                        <p id="codeDisplay" class="code-display text-4xl font-bold text-green-400 tracking-[16px]"></p>
+                        <div class="mt-4 flex justify-center gap-2">
+                            <span class="px-2 py-1 bg-white/10 rounded text-xs text-indigo-300">⏱ 24h expiry</span>
+                            <span class="px-2 py-1 bg-white/10 rounded text-xs text-indigo-300">⬇ Max 3 downloads</span>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-3 justify-center">
+                        <button onclick="copyCode()" class="px-6 py-3 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-medium flex items-center gap-2">
+                            <i class="fas fa-copy"></i>Copy Code
+                        </button>
+                        <button onclick="shareCode()" class="px-6 py-3 bg-indigo-500 text-white rounded-xl hover:bg-indigo-600 transition font-medium flex items-center gap-2 shadow-lg shadow-indigo-500/30">
+                            <i class="fas fa-share-alt"></i>Share
+                        </button>
+                    </div>
+
+                    <button onclick="resetUpload()" class="mt-6 text-gray-500 hover:text-gray-700 transition text-sm">
+                        <i class="fas fa-plus mr-1"></i>Send Another File
+                    </button>
+                </div>
+            </div>
+
+            <!-- Download Section -->
+            <div id="section-download" class="hidden">
+                <div class="text-center mb-8">
+                    <h2 class="text-3xl font-bold text-gray-800 mb-2">Retrieve File</h2>
+                    <p class="text-gray-600">Enter the 6-character secret codeword to download.</p>
+                </div>
+
+                <div id="downloadForm">
+                    <div class="mb-6 relative">
+                        <div class="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400">
+                            <i class="fas fa-key"></i>
+                        </div>
+                        <input 
+                            type="text" 
+                            id="codeInput" 
+                            maxlength="6" 
+                            placeholder="XXXXXX" 
+                            class="w-full text-center text-4xl font-bold tracking-[16px] uppercase border-2 border-gray-200 rounded-2xl py-5 pl-12 pr-4 focus:ring-4 focus:ring-indigo-500/20 focus:border-indigo-500 transition-all duration-300 bg-gray-50/50"
+                            oninput="this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '')">
+                        <p class="text-center text-sm text-gray-500 mt-3">6-character alphanumeric code</p>
+                    </div>
+                    <button onclick="retrieveFile()" class="w-full py-4 btn-primary text-white rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/30">
+                        <i class="fas fa-search mr-2"></i>Retrieve File
+                    </button>
+                </div>
+
+                <!-- File Found -->
+                <div id="fileFound" class="hidden">
+                    <div class="bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200 rounded-2xl p-6 mb-6 shadow-lg shadow-green-500/10">
+                        <div class="flex items-center gap-4 mb-4">
+                            <div id="foundFileIcon" class="file-type-icon icon-file">
+                                <i class="fas fa-file"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p id="foundFileName" class="font-bold text-gray-800 truncate text-lg"></p>
+                                <p id="foundFileSize" class="text-sm text-gray-600"></p>
+                            </div>
+                            <div class="text-right">
+                                <span id="foundDownloadsLeft" class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold"></span>
+                            </div>
+                        </div>
+
+                        <!-- Preview for images/videos/text -->
+                        <div id="foundPreview" class="hidden mb-4 rounded-xl overflow-hidden bg-black/5">
+                            <img id="foundPreviewImg" class="max-w-full max-h-72 mx-auto" style="display:none;">
+                            <video id="foundPreviewVideo" class="max-w-full max-h-72 mx-auto" controls style="display:none;"></video>
+                            <div id="foundPreviewText" class="hidden bg-white rounded-xl p-5 max-h-72 overflow-y-auto">
+                                <pre id="foundTextContent" class="whitespace-pre-wrap text-sm text-gray-700 font-mono leading-relaxed"></pre>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-4 text-xs text-gray-500">
+                            <span id="foundFileDate"><i class="far fa-clock mr-1"></i></span>
+                            <span id="foundFileType"><i class="far fa-file mr-1"></i></span>
+                        </div>
+                    </div>
+
+                    <button onclick="downloadRetrieved()" class="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-2xl font-bold text-lg hover:from-green-600 hover:to-emerald-600 transition shadow-lg shadow-green-500/30 mb-3 flex items-center justify-center gap-2">
+                        <i class="fas fa-download"></i>Download File
+                    </button>
+
+                    <button onclick="copyRetrievedText()" id="copyTextBtn" class="hidden w-full py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-medium mb-3 flex items-center justify-center gap-2">
+                        <i class="fas fa-copy"></i>Copy Text to Clipboard
+                    </button>
+
+                    <button onclick="resetDownload()" class="w-full py-3 text-gray-500 hover:text-gray-700 transition text-sm">
+                        <i class="fas fa-arrow-left mr-1"></i>Check Another Code
+                    </button>
+                </div>
+
+                <!-- Not Found -->
+                <div id="fileNotFound" class="hidden text-center">
+                    <div class="w-20 h-20 bg-gradient-to-br from-red-100 to-pink-100 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg shadow-red-500/10">
+                        <i class="fas fa-times text-3xl text-red-500"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-800 mb-2">Code Not Found</h3>
+                    <p class="text-gray-600 mb-2">The code may be expired, incorrect, or max downloads reached.</p>
+                    <p class="text-sm text-gray-400 mb-6">Codes expire after 24 hours and allow max 3 downloads.</p>
+                    <button onclick="resetDownload()" class="px-8 py-3 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-medium">
+                        <i class="fas fa-redo mr-2"></i>Try Again
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Supported Types -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+            <div class="glass rounded-2xl p-5 text-center card-hover cursor-default">
+                <div class="w-14 h-14 bg-gradient-to-br from-blue-100 to-blue-200 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-blue-500/20">
+                    <i class="fas fa-image text-2xl text-blue-600"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 text-sm mb-1">Photos</h4>
+                <p class="text-xs text-gray-500">JPG, PNG, GIF, WebP</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center card-hover cursor-default">
+                <div class="w-14 h-14 bg-gradient-to-br from-pink-100 to-pink-200 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-pink-500/20">
+                    <i class="fas fa-video text-2xl text-pink-600"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 text-sm mb-1">Videos</h4>
+                <p class="text-xs text-gray-500">MP4, MOV, AVI, MKV</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center card-hover cursor-default">
+                <div class="w-14 h-14 bg-gradient-to-br from-amber-100 to-amber-200 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-amber-500/20">
+                    <i class="fas fa-align-left text-2xl text-amber-600"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 text-sm mb-1">Text</h4>
+                <p class="text-xs text-gray-500">Messages, Notes, Code</p>
+            </div>
+            <div class="glass rounded-2xl p-5 text-center card-hover cursor-default">
+                <div class="w-14 h-14 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-gray-500/20">
+                    <i class="fas fa-file-alt text-2xl text-gray-600"></i>
+                </div>
+                <h4 class="font-bold text-gray-800 text-sm mb-1">Documents</h4>
+                <p class="text-xs text-gray-500">PDF, DOC, Any File</p>
+            </div>
+        </div>
+
+        <!-- How It Works -->
+        <div class="glass rounded-2xl p-8 shadow-xl">
+            <h3 class="text-xl font-bold text-gray-800 text-center mb-8">How It Works</h3>
+            <div class="grid md:grid-cols-3 gap-6">
+                <div class="text-center fade-in-up" style="animation-delay: 0.1s;">
+                    <div class="step-number w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">
+                        1
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Upload</h4>
+                    <p class="text-sm text-gray-600">Drop a file, photo, video, or type text. Up to 100MB.</p>
+                </div>
+                <div class="text-center fade-in-up" style="animation-delay: 0.2s;">
+                    <div class="step-number w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">
+                        2
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Get Code</h4>
+                    <p class="text-sm text-gray-600">Receive a unique 6-character secret codeword.</p>
+                </div>
+                <div class="text-center fade-in-up" style="animation-delay: 0.3s;">
+                    <div class="step-number w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 text-white font-bold text-xl">
+                        3
+                    </div>
+                    <h4 class="font-bold text-gray-800 mb-2">Retrieve</h4>
+                    <p class="text-sm text-gray-600">Enter the code on any device to download instantly.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-8 pb-8">
+            <p class="text-white/60 text-sm">
+                <i class="fas fa-shield-alt mr-1"></i> No login required • Files auto-delete after 24h • Max 3 downloads
+            </p>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast bg-gray-900 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3">
+        <div id="toastIcon" class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center">
+            <i class="fas fa-check text-green-400"></i>
+        </div>
+        <span id="toastMsg" class="font-medium">Done</span>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_BASE = window.location.origin.includes('localhost') 
+            ? 'http://localhost:3000' 
+            : window.location.origin;
+
+        let currentFile = null;
+        let currentCode = '';
+        let retrievedFileData = null;
+        let uploadType = 'file'; // 'file' or 'text'
+
+        // ========== TAB SWITCHING ==========
+        function switchTab(tab) {
+            const uploadSection = document.getElementById('section-upload');
+            const downloadSection = document.getElementById('section-download');
+            const tabUpload = document.getElementById('tab-upload');
+            const tabDownload = document.getElementById('tab-download');
+
+            if (tab === 'upload') {
+                uploadSection.classList.remove('hidden');
+                downloadSection.classList.add('hidden');
+                tabUpload.className = 'flex-1 py-4 text-center font-semibold tab-active transition-all duration-300';
+                tabDownload.className = 'flex-1 py-4 text-center font-semibold tab-inactive transition-all duration-300';
+            } else {
+                uploadSection.classList.add('hidden');
+                downloadSection.classList.remove('hidden');
+                tabUpload.className = 'flex-1 py-4 text-center font-semibold tab-inactive transition-all duration-300';
+                tabDownload.className = 'flex-1 py-4 text-center font-semibold tab-active transition-all duration-300';
+            }
+        }
+
+        // ========== UPLOAD TYPE SWITCHING ==========
+        function setUploadType(type) {
+            uploadType = type;
+            const fileBtn = document.getElementById('type-file');
+            const textBtn = document.getElementById('type-text');
+            const fileArea = document.getElementById('fileUploadArea');
+            const textArea = document.getElementById('textUploadArea');
+
+            if (type === 'file') {
+                fileBtn.classList.add('active');
+                textBtn.classList.remove('active');
+                fileArea.classList.remove('hidden');
+                textArea.classList.add('hidden');
+                updateUploadButton();
+            } else {
+                fileBtn.classList.remove('active');
+                textBtn.classList.add('active');
+                fileArea.classList.add('hidden');
+                textArea.classList.remove('hidden');
+                updateUploadButton();
+            }
+        }
+
+        function updateUploadButton() {
+            const btn = document.getElementById('uploadBtn');
+            if (uploadType === 'file') {
+                btn.disabled = !currentFile;
+            } else {
+                const text = document.getElementById('textInput').value.trim();
+                btn.disabled = !text;
+            }
+        }
+
+        // ========== FILE HANDLING ==========
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+
+        dropZone.addEventListener('click', () => fileInput.click());
+        dropZone.addEventListener('dragover', (e) => { 
+            e.preventDefault(); 
+            dropZone.classList.add('dragover'); 
+        });
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files.length) handleFileSelect(e.dataTransfer.files[0]);
+        });
+        fileInput.addEventListener('change', (e) => { 
+            if (e.target.files.length) handleFileSelect(e.target.files[0]); 
+        });
+
+        function handleFileSelect(file) {
+            if (file.size > 104857600) {
+                showToast('File too large! Maximum is 100MB', 'error');
+                shakeElement(dropZone);
+                return;
+            }
+
+            currentFile = file;
+            showPreview(file);
+            updateUploadButton();
+        }
+
+        function showPreview(file) {
+            const previewDiv = document.getElementById('filePreview');
+            const contentDiv = document.getElementById('previewContent');
+            const iconDiv = document.getElementById('previewIcon');
+            const nameEl = document.getElementById('previewName');
+            const sizeEl = document.getElementById('previewSize');
+
+            previewDiv.classList.remove('hidden');
+            previewDiv.classList.add('slide-in');
+            nameEl.textContent = file.name;
+            sizeEl.textContent = formatSize(file.size);
+
+            // Set icon
+            const ext = file.name.split('.').pop().toLowerCase();
+            iconDiv.className = `file-type-icon ${getFileTypeClass(file.name)}`;
+            iconDiv.innerHTML = `<i class="fas ${getFileTypeIcon(file.name)}"></i>`;
+
+            contentDiv.innerHTML = '';
+
+            if (file.type.startsWith('image/')) {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.className = 'rounded-xl shadow-lg';
+                contentDiv.appendChild(img);
+            } else if (file.type.startsWith('video/')) {
+                const video = document.createElement('video');
+                video.src = URL.createObjectURL(file);
+                video.controls = true;
+                video.className = 'rounded-xl shadow-lg';
+                contentDiv.appendChild(video);
+            } else {
+                const icon = document.createElement('div');
+                icon.className = 'text-7xl text-gray-400 py-10';
+                icon.innerHTML = `<i class="fas ${getFileTypeIcon(file.name)}"></i>`;
+                contentDiv.appendChild(icon);
+            }
+        }
+
+        function clearPreview() {
+            currentFile = null;
+            document.getElementById('filePreview').classList.add('hidden');
+            document.getElementById('fileInput').value = '';
+            updateUploadButton();
+        }
+
+        // ========== TEXT HANDLING ==========
+        function updateTextStats() {
+            const text = document.getElementById('textInput').value;
+            const stats = document.getElementById('textStats');
+            const chars = text.length;
+            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            stats.textContent = `${chars} characters • ${words} words`;
+            updateUploadButton();
+        }
+
+        function clearText() {
+            document.getElementById('textInput').value = '';
+            updateTextStats();
+            updateUploadButton();
+        }
+
+        // ========== UPLOAD ==========
+        async function uploadContent() {
+            if (uploadType === 'file' && currentFile) {
+                await uploadFile();
+            } else if (uploadType === 'text') {
+                await uploadText();
+            }
+        }
+
+        async function uploadFile() {
+            if (!currentFile) return;
+
+            const formData = new FormData();
+            formData.append('file', currentFile);
+
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const progressStatus = document.getElementById('progressStatus');
+            const progressDetails = document.getElementById('progressDetails');
+            const uploadBtn = document.getElementById('uploadBtn');
+
+            progressDiv.classList.remove('hidden');
+            progressDiv.classList.add('slide-in');
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i>Uploading...';
+
+            try {
+                const xhr = new XMLHttpRequest();
+
+                xhr.upload.addEventListener('progress', (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percent + '%';
+                        progressPercent.textContent = percent + '%';
+                        progressStatus.innerHTML = `<i class="fas fa-circle-notch fa-spin text-indigo-500 mr-2"></i>Uploading ${currentFile.name}`;
+                        progressDetails.textContent = `${formatSize(e.loaded)} / ${formatSize(e.total)} • ${formatSpeed(e.loaded, e.total, Date.now())}`;
+                    }
+                });
+
+                const response = await new Promise((resolve, reject) => {
+                    xhr.addEventListener('load', () => {
+                        if (xhr.status >= 200 && xhr.status < 300) {
+                            resolve(xhr.response);
+                        } else {
+                            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                        }
+                    });
+                    xhr.addEventListener('error', () => reject(new Error('Upload failed')));
+                    xhr.open('POST', `${API_BASE}/api/upload`);
+                    xhr.send(formData);
+                });
+
+                const data = JSON.parse(response);
+
+                if (data.success) {
+                    currentCode = data.code;
+                    showSuccess();
+                } else {
+                    throw new Error(data.error || 'Upload failed');
+                }
+            } catch (err) {
+                showToast('Upload failed: ' + err.message, 'error');
+                shakeElement(uploadBtn);
+                progressDiv.classList.add('hidden');
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Upload & Get Code';
+            }
+        }
+
+        async function uploadText() {
+            const text = document.getElementById('textInput').value.trim();
+            if (!text) return showToast('Please enter some text', 'error');
+
+            const progressDiv = document.getElementById('uploadProgress');
+            const progressBar = document.getElementById('progressBar');
+            const progressPercent = document.getElementById('progressPercent');
+            const progressStatus = document.getElementById('progressStatus');
+            const uploadBtn = document.getElementById('uploadBtn');
+
+            progressDiv.classList.remove('hidden');
+            progressBar.style.width = '50%';
+            progressPercent.textContent = '50%';
+            progressStatus.innerHTML = '<i class="fas fa-circle-notch fa-spin text-indigo-500 mr-2"></i>Saving text...';
+            uploadBtn.disabled = true;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/upload-text`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    progressBar.style.width = '100%';
+                    progressPercent.textContent = '100%';
+                    currentCode = data.code;
+                    showSuccess();
+                } else {
+                    throw new Error(data.error || 'Upload failed');
+                }
+            } catch (err) {
+                showToast('Upload failed: ' + err.message, 'error');
+                shakeElement(uploadBtn);
+                progressDiv.classList.add('hidden');
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Upload & Get Code';
+            }
+        }
+
+        function showSuccess() {
+            document.getElementById('uploadArea').classList.add('hidden');
+            document.getElementById('textUploadArea').classList.add('hidden');
+            document.getElementById('uploadTypeSelector').classList.add('hidden');
+            document.getElementById('uploadProgress').classList.add('hidden');
+
+            const successDiv = document.getElementById('uploadSuccess');
+            successDiv.classList.remove('hidden');
+            successDiv.classList.add('slide-in');
+
+            document.getElementById('codeDisplay').textContent = currentCode;
+        }
+
+        function resetUpload() {
+            document.getElementById('uploadArea').classList.remove('hidden');
+            document.getElementById('uploadTypeSelector').classList.remove('hidden');
+            document.getElementById('uploadSuccess').classList.add('hidden');
+            document.getElementById('uploadProgress').classList.add('hidden');
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('textInput').value = '';
+            document.getElementById('uploadBtn').disabled = true;
+            document.getElementById('uploadBtn').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Upload & Get Code';
+
+            clearPreview();
+            updateTextStats();
+            setUploadType('file');
+            currentCode = '';
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText(currentCode).then(() => {
+                showToast('Code copied to clipboard!');
+            });
+        }
+
+        async function shareCode() {
+            const shareData = {
+                title: 'Codeword File Share',
+                text: `Download my file with code: ${currentCode}`,
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                try {
+                    await navigator.share(shareData);
+                } catch (err) {
+                    copyCode();
+                }
+            } else {
+                copyCode();
+            }
+        }
+
+        // ========== RETRIEVE ==========
+        async function retrieveFile() {
+            const code = document.getElementById('codeInput').value.toUpperCase();
+            if (code.length !== 6) {
+                showToast('Please enter a 6-character code', 'error');
+                shakeElement(document.getElementById('codeInput'));
+                return;
+            }
+
+            document.getElementById('downloadForm').classList.add('hidden');
+
+            try {
+                const response = await fetch(`${API_BASE}/api/retrieve/${code}`);
+                const data = await response.json();
+
+                if (data.success) {
+                    retrievedFileData = data.file;
+                    retrievedFileData.code = code;
+
+                    document.getElementById('fileFound').classList.remove('hidden');
+                    document.getElementById('fileFound').classList.add('slide-in');
+                    document.getElementById('fileNotFound').classList.add('hidden');
+
+                    document.getElementById('foundFileName').textContent = data.file.name;
+                    document.getElementById('foundFileSize').textContent = formatSize(data.file.size);
+                    document.getElementById('foundFileDate').innerHTML = `<i class="far fa-clock mr-1"></i>Uploaded: ${new Date(data.file.uploadedAt).toLocaleString()}`;
+                    document.getElementById('foundFileType').innerHTML = `<i class="far fa-file mr-1"></i>Type: ${data.file.type || 'Unknown'}`;
+                    document.getElementById('foundDownloadsLeft').textContent = `${data.file.downloadsLeft} left`;
+
+                    // Set icon
+                    const iconDiv = document.getElementById('foundFileIcon');
+                    iconDiv.className = `file-type-icon ${getFileTypeClass(data.file.name)}`;
+                    iconDiv.innerHTML = `<i class="fas ${getFileTypeIcon(data.file.name)}"></i>`;
+
+                    // Show preview
+                    const previewDiv = document.getElementById('foundPreview');
+                    const imgEl = document.getElementById('foundPreviewImg');
+                    const videoEl = document.getElementById('foundPreviewVideo');
+                    const textDiv = document.getElementById('foundPreviewText');
+                    const textContent = document.getElementById('foundTextContent');
+                    const copyBtn = document.getElementById('copyTextBtn');
+
+                    previewDiv.classList.add('hidden');
+                    imgEl.style.display = 'none';
+                    videoEl.style.display = 'none';
+                    textDiv.classList.add('hidden');
+                    copyBtn.classList.add('hidden');
+
+                    if (data.file.type && data.file.type.startsWith('image/')) {
+                        previewDiv.classList.remove('hidden');
+                        imgEl.style.display = 'block';
+                        imgEl.src = `${API_BASE}/api/download/${code}?preview=1`;
+                    } else if (data.file.type && data.file.type.startsWith('video/')) {
+                        previewDiv.classList.remove('hidden');
+                        videoEl.style.display = 'block';
+                        videoEl.src = `${API_BASE}/api/download/${code}?preview=1`;
+                    } else if (data.file.type === 'text/plain' || data.file.name === 'message.txt') {
+                        // For text files, fetch and display content
+                        previewDiv.classList.remove('hidden');
+                        textDiv.classList.remove('hidden');
+                        copyBtn.classList.remove('hidden');
+
+                        try {
+                            const textResponse = await fetch(`${API_BASE}/api/download/${code}?preview=1`);
+                            const text = await textResponse.text();
+                            textContent.textContent = text;
+                        } catch (e) {
+                            textContent.textContent = '[Text content unavailable]';
+                        }
+                    }
+                } else {
+                    throw new Error(data.error);
+                }
+            } catch (err) {
+                document.getElementById('fileFound').classList.add('hidden');
+                const notFound = document.getElementById('fileNotFound');
+                notFound.classList.remove('hidden');
+                notFound.classList.add('slide-in');
+            }
+        }
+
+        function downloadRetrieved() {
+            if (!retrievedFileData) return;
+            const code = retrievedFileData.code;
+
+            const a = document.createElement('a');
+            a.href = `${API_BASE}/api/download/${code}`;
+            a.download = retrievedFileData.name;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
+            showToast('Download started!');
+
+            // Update download count display
+            const leftEl = document.getElementById('foundDownloadsLeft');
+            if (leftEl) {
+                const current = parseInt(leftEl.textContent);
+                if (current > 1) {
+                    leftEl.textContent = `${current - 1} left`;
+                } else {
+                    leftEl.textContent = 'Last download!';
+                    leftEl.className = 'px-3 py-1 bg-red-100 text-red-700 rounded-full text-xs font-bold';
+                }
+            }
+        }
+
+        function copyRetrievedText() {
+            const textContent = document.getElementById('foundTextContent');
+            if (textContent) {
+                navigator.clipboard.writeText(textContent.textContent).then(() => {
+                    showToast('Text copied to clipboard!');
+                });
+            }
+        }
+
+        function resetDownload() {
+            document.getElementById('downloadForm').classList.remove('hidden');
+            document.getElementById('fileFound').classList.add('hidden');
+            document.getElementById('fileNotFound').classList.add('hidden');
+            document.getElementById('codeInput').value = '';
+            retrievedFileData = null;
+        }
+
+        // ========== HELPERS ==========
+        function getFileTypeClass(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (['jpg','jpeg','png','gif','webp'].includes(ext)) return 'icon-image';
+            if (['mp4','mov','avi','mkv','webm'].includes(ext)) return 'icon-video';
+            if (['mp3','wav','ogg','m4a'].includes(ext)) return 'icon-audio';
+            if (filename === 'message.txt') return 'icon-text';
+            return 'icon-file';
+        }
+
+        function getFileTypeIcon(filename) {
+            const ext = filename.split('.').pop().toLowerCase();
+            if (['jpg','jpeg','png','gif','webp'].includes(ext)) return 'fa-image';
+            if (['mp4','mov','avi','mkv','webm'].includes(ext)) return 'fa-video';
+            if (['mp3','wav','ogg','m4a'].includes(ext)) return 'fa-music';
+            if (filename === 'message.txt') return 'fa-align-left';
+            return 'fa-file';
+        }
+
+        function formatSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatSpeed(loaded, total, startTime) {
+            const elapsed = (Date.now() - startTime) / 1000;
+            if (elapsed < 0.1) return 'calculating...';
+            const speed = loaded / elapsed;
+            return formatSize(speed) + '/s';
+        }
+
+        function shakeElement(el) {
+            el.classList.add('shake');
+            setTimeout(() => el.classList.remove('shake'), 500);
+        }
+
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toast');
+            const msgEl = document.getElementById('toastMsg');
+            const iconDiv = document.getElementById('toastIcon');
+
+            msgEl.textContent = msg;
+
+            if (type === 'error') {
+                iconDiv.className = 'w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center';
+                iconDiv.innerHTML = '<i class="fas fa-exclamation text-red-400"></i>';
+            } else {
+                iconDiv.className = 'w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center';
+                iconDiv.innerHTML = '<i class="fas fa-check text-green-400"></i>';
+            }
+
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        // Enter key on code input
+        document.getElementById('codeInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') retrieveFile();
+        });
+
+        // Text input listener
+        document.getElementById('textInput').addEventListener('input', updateTextStats);
+    </script>
+</body>
+</html>
