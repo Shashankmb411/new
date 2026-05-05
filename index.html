@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * { font-family: 'Inter', sans-serif; }
-
+        
         .gradient-bg { 
             background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
             background-size: 400% 400%;
@@ -20,19 +20,19 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-
+        
         .glass { 
             background: rgba(255,255,255,0.92); 
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.3);
         }
-
+        
         .glass-dark {
             background: rgba(17, 24, 39, 0.95);
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255,255,255,0.1);
         }
-
+        
         .tab-active { 
             border-bottom: 3px solid #667eea; 
             color: #667eea;
@@ -46,7 +46,7 @@
             color: #374151; 
             background: rgba(102,126,234,0.05);
         }
-
+        
         .drop-zone { 
             border: 3px dashed #cbd5e1; 
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -73,37 +73,37 @@
             transform: scale(1.02);
             box-shadow: 0 0 0 4px rgba(102,126,234,0.2);
         }
-
+        
         .code-display { 
             font-family: 'Courier New', monospace; 
             letter-spacing: 12px;
             text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
         }
-
+        
         @keyframes slideIn { 
             from { opacity: 0; transform: translateY(30px) scale(0.95); } 
             to { opacity: 1; transform: translateY(0) scale(1); } 
         }
         .slide-in { animation: slideIn 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
+        
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .fade-in-up { animation: fadeInUp 0.6s ease-out forwards; }
-
+        
         @keyframes pulse-glow {
             0%, 100% { box-shadow: 0 0 0 0 rgba(102,126,234,0.4); }
             50% { box-shadow: 0 0 0 15px rgba(102,126,234,0); }
         }
         .pulse-glow { animation: pulse-glow 2s infinite; }
-
+        
         @keyframes float {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
         .float { animation: float 3s ease-in-out infinite; }
-
+        
         @keyframes shimmer {
             0% { background-position: -1000px 0; }
             100% { background-position: 1000px 0; }
@@ -113,7 +113,7 @@
             background-size: 1000px 100%;
             animation: shimmer 2s infinite;
         }
-
+        
         @keyframes bounceIn {
             0% { transform: scale(0.3); opacity: 0; }
             50% { transform: scale(1.05); }
@@ -121,20 +121,20 @@
             100% { transform: scale(1); opacity: 1; }
         }
         .bounce-in { animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55); }
-
+        
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
             20%, 40%, 60%, 80% { transform: translateX(5px); }
         }
         .shake { animation: shake 0.5s ease-in-out; }
-
+        
         @keyframes rotateIn {
             from { transform: rotate(-180deg) scale(0); opacity: 0; }
             to { transform: rotate(0) scale(1); opacity: 1; }
         }
         .rotate-in { animation: rotateIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
+        
         .preview-container { 
             max-height: 320px; 
             overflow: hidden; 
@@ -160,14 +160,14 @@
         .preview-container:hover img, .preview-container:hover video {
             transform: scale(1.02);
         }
-
+        
         .progress-bar { 
             transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: linear-gradient(90deg, #667eea, #764ba2, #667eea);
             background-size: 200% 100%;
             animation: shimmer 2s infinite;
         }
-
+        
         .toast { 
             position: fixed; 
             bottom: 24px; 
@@ -180,7 +180,7 @@
         .toast.show { 
             transform: translateY(0) scale(1); 
         }
-
+        
         .file-type-icon { 
             width: 56px; 
             height: 56px; 
@@ -199,7 +199,7 @@
         .icon-audio { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #059669; }
         .icon-text { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #d97706; }
         .icon-file { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); color: #6b7280; }
-
+        
         .btn-primary {
             background: linear-gradient(135deg, #667eea, #764ba2);
             transition: all 0.3s ease;
@@ -226,7 +226,7 @@
         .btn-primary:active {
             transform: translateY(0);
         }
-
+        
         .card-hover {
             transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
@@ -234,7 +234,7 @@
             transform: translateY(-8px);
             box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
         }
-
+        
         .text-block {
             background: linear-gradient(135deg, #fefce8, #fef9c3);
             border: 2px dashed #fbbf24;
@@ -244,12 +244,12 @@
             border-color: #f59e0b;
             box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
         }
-
+        
         .step-number {
             background: linear-gradient(135deg, #667eea, #764ba2);
             box-shadow: 0 4px 15px rgba(102,126,234,0.4);
         }
-
+        
         .feature-card {
             transition: all 0.4s ease;
             border: 1px solid transparent;
@@ -258,12 +258,12 @@
             border-color: rgba(102,126,234,0.2);
             transform: translateY(-5px);
         }
-
+        
         .code-box {
             background: linear-gradient(135deg, #1e1b4b, #312e81);
             box-shadow: 0 25px 50px -12px rgba(30, 27, 75, 0.5);
         }
-
+        
         .success-ring {
             animation: successRing 0.6s ease-out;
         }
@@ -272,21 +272,12 @@
             50% { transform: scale(1.2); }
             100% { transform: scale(1); opacity: 1; }
         }
-
-        .typing-cursor::after {
-            content: '|';
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
-        }
-
+        
         /* Scrollbar styling */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 4px; }
-
+        
         .upload-type-btn {
             transition: all 0.3s ease;
             border: 2px solid transparent;
@@ -300,13 +291,10 @@
             border-color: #e5e7eb;
             background: #f9fafb;
         }
-
-        .counter-animation {
-            animation: countUp 0.5s ease-out;
-        }
-        @keyframes countUp {
-            from { transform: scale(1.5); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
+        
+        .error-state {
+            border-color: #ef4444 !important;
+            background: rgba(239, 68, 68, 0.05) !important;
         }
     </style>
 </head>
@@ -386,7 +374,7 @@
                         </div>
                         <input type="file" id="fileInput" class="hidden">
                     </div>
-
+                    
                     <!-- File Preview -->
                     <div id="filePreview" class="hidden mb-6">
                         <div class="bg-gray-50 rounded-2xl p-5 border border-gray-200">
@@ -420,8 +408,7 @@
                             id="textInput" 
                             rows="8" 
                             class="w-full bg-transparent border-none resize-none focus:ring-0 text-gray-700 placeholder-gray-400 text-base leading-relaxed"
-                            placeholder="Write your message here... It can be anything - notes, code, links, secrets..."
-                            oninput="updateTextStats()"></textarea>
+                            placeholder="Write your message here... It can be anything - notes, code, links, secrets..."></textarea>
                         <div class="flex justify-between items-center mt-3 pt-3 border-t border-amber-200/50">
                             <span id="textStats" class="text-xs text-amber-600">0 characters</span>
                             <button onclick="clearText()" class="text-xs text-amber-600 hover:text-amber-800 transition">
@@ -448,6 +435,19 @@
                     </div>
                 </div>
 
+                <!-- Error Message -->
+                <div id="uploadError" class="hidden mb-6">
+                    <div class="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-red-500"></i>
+                        </div>
+                        <div>
+                            <p class="font-semibold text-red-700 text-sm">Upload Failed</p>
+                            <p id="errorMessage" class="text-xs text-red-600"></p>
+                        </div>
+                    </div>
+                </div>
+
                 <button id="uploadBtn" onclick="uploadContent()" class="w-full py-4 btn-primary text-white rounded-2xl font-bold text-lg shadow-lg shadow-indigo-500/30 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none" disabled>
                     <i class="fas fa-paper-plane mr-2"></i>Upload & Get Code
                 </button>
@@ -459,7 +459,7 @@
                     </div>
                     <h3 class="text-2xl font-bold text-gray-800 mb-2">Uploaded Successfully!</h3>
                     <p class="text-gray-600 mb-8">Share this secret codeword with anyone, anywhere.</p>
-
+                    
                     <div class="code-box rounded-2xl p-8 mb-6 relative overflow-hidden">
                         <div class="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
                         <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/5 rounded-full translate-y-1/2 -translate-x-1/2"></div>
@@ -470,7 +470,7 @@
                             <span class="px-2 py-1 bg-white/10 rounded text-xs text-indigo-300">⬇ Max 3 downloads</span>
                         </div>
                     </div>
-
+                    
                     <div class="flex gap-3 justify-center">
                         <button onclick="copyCode()" class="px-6 py-3 bg-gray-100 rounded-xl hover:bg-gray-200 transition font-medium flex items-center gap-2">
                             <i class="fas fa-copy"></i>Copy Code
@@ -479,7 +479,7 @@
                             <i class="fas fa-share-alt"></i>Share
                         </button>
                     </div>
-
+                    
                     <button onclick="resetUpload()" class="mt-6 text-gray-500 hover:text-gray-700 transition text-sm">
                         <i class="fas fa-plus mr-1"></i>Send Another File
                     </button>
@@ -527,7 +527,7 @@
                                 <span id="foundDownloadsLeft" class="px-3 py-1 bg-green-100 text-green-700 rounded-full text-xs font-bold"></span>
                             </div>
                         </div>
-
+                        
                         <!-- Preview for images/videos/text -->
                         <div id="foundPreview" class="hidden mb-4 rounded-xl overflow-hidden bg-black/5">
                             <img id="foundPreviewImg" class="max-w-full max-h-72 mx-auto" style="display:none;">
@@ -536,21 +536,21 @@
                                 <pre id="foundTextContent" class="whitespace-pre-wrap text-sm text-gray-700 font-mono leading-relaxed"></pre>
                             </div>
                         </div>
-
+                        
                         <div class="flex items-center gap-4 text-xs text-gray-500">
                             <span id="foundFileDate"><i class="far fa-clock mr-1"></i></span>
                             <span id="foundFileType"><i class="far fa-file mr-1"></i></span>
                         </div>
                     </div>
-
+                    
                     <button onclick="downloadRetrieved()" class="w-full py-4 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-2xl font-bold text-lg hover:from-green-600 hover:to-emerald-600 transition shadow-lg shadow-green-500/30 mb-3 flex items-center justify-center gap-2">
                         <i class="fas fa-download"></i>Download File
                     </button>
-
+                    
                     <button onclick="copyRetrievedText()" id="copyTextBtn" class="hidden w-full py-3 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition font-medium mb-3 flex items-center justify-center gap-2">
                         <i class="fas fa-copy"></i>Copy Text to Clipboard
                     </button>
-
+                    
                     <button onclick="resetDownload()" class="w-full py-3 text-gray-500 hover:text-gray-700 transition text-sm">
                         <i class="fas fa-arrow-left mr-1"></i>Check Another Code
                     </button>
@@ -648,15 +648,22 @@
     </div>
 
     <script>
-        // API Configuration
-        const API_BASE = window.location.origin.includes('localhost') 
-            ? 'http://localhost:3000' 
-            : window.location.origin;
-
+        // API Configuration - Auto-detect based on environment
+        const API_BASE = (() => {
+            // If running on file:// protocol (local file), use localhost
+            if (window.location.protocol === 'file:') {
+                return 'http://localhost:3000';
+            }
+            // If deployed, use same origin
+            return window.location.origin;
+        })();
+        
+        console.log('API Base:', API_BASE);
+        
         let currentFile = null;
         let currentCode = '';
         let retrievedFileData = null;
-        let uploadType = 'file'; // 'file' or 'text'
+        let uploadType = 'file';
 
         // ========== TAB SWITCHING ==========
         function switchTab(tab) {
@@ -664,7 +671,7 @@
             const downloadSection = document.getElementById('section-download');
             const tabUpload = document.getElementById('tab-upload');
             const tabDownload = document.getElementById('tab-download');
-
+            
             if (tab === 'upload') {
                 uploadSection.classList.remove('hidden');
                 downloadSection.classList.add('hidden');
@@ -685,20 +692,20 @@
             const textBtn = document.getElementById('type-text');
             const fileArea = document.getElementById('fileUploadArea');
             const textArea = document.getElementById('textUploadArea');
-
+            
             if (type === 'file') {
                 fileBtn.classList.add('active');
                 textBtn.classList.remove('active');
                 fileArea.classList.remove('hidden');
                 textArea.classList.add('hidden');
-                updateUploadButton();
             } else {
                 fileBtn.classList.remove('active');
                 textBtn.classList.add('active');
                 fileArea.classList.add('hidden');
                 textArea.classList.remove('hidden');
-                updateUploadButton();
             }
+            updateUploadButton();
+            hideError();
         }
 
         function updateUploadButton() {
@@ -731,12 +738,14 @@
         });
 
         function handleFileSelect(file) {
+            hideError();
+            
             if (file.size > 104857600) {
-                showToast('File too large! Maximum is 100MB', 'error');
+                showError('File too large! Maximum size is 100MB');
                 shakeElement(dropZone);
                 return;
             }
-
+            
             currentFile = file;
             showPreview(file);
             updateUploadButton();
@@ -748,23 +757,22 @@
             const iconDiv = document.getElementById('previewIcon');
             const nameEl = document.getElementById('previewName');
             const sizeEl = document.getElementById('previewSize');
-
+            
             previewDiv.classList.remove('hidden');
             previewDiv.classList.add('slide-in');
             nameEl.textContent = file.name;
             sizeEl.textContent = formatSize(file.size);
-
-            // Set icon
-            const ext = file.name.split('.').pop().toLowerCase();
+            
             iconDiv.className = `file-type-icon ${getFileTypeClass(file.name)}`;
             iconDiv.innerHTML = `<i class="fas ${getFileTypeIcon(file.name)}"></i>`;
-
+            
             contentDiv.innerHTML = '';
-
+            
             if (file.type.startsWith('image/')) {
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
                 img.className = 'rounded-xl shadow-lg';
+                img.onload = () => URL.revokeObjectURL(img.src);
                 contentDiv.appendChild(img);
             } else if (file.type.startsWith('video/')) {
                 const video = document.createElement('video');
@@ -788,23 +796,38 @@
         }
 
         // ========== TEXT HANDLING ==========
-        function updateTextStats() {
+        document.getElementById('textInput').addEventListener('input', () => {
             const text = document.getElementById('textInput').value;
             const stats = document.getElementById('textStats');
             const chars = text.length;
-            const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+            const words = text.trim() ? text.trim().split(/\\s+/).length : 0;
             stats.textContent = `${chars} characters • ${words} words`;
             updateUploadButton();
-        }
+        });
 
         function clearText() {
             document.getElementById('textInput').value = '';
-            updateTextStats();
+            document.getElementById('textStats').textContent = '0 characters';
             updateUploadButton();
+        }
+
+        // ========== ERROR HANDLING ==========
+        function showError(msg) {
+            const errorDiv = document.getElementById('uploadError');
+            const errorMsg = document.getElementById('errorMessage');
+            errorMsg.textContent = msg;
+            errorDiv.classList.remove('hidden');
+            errorDiv.classList.add('slide-in');
+        }
+
+        function hideError() {
+            document.getElementById('uploadError').classList.add('hidden');
         }
 
         // ========== UPLOAD ==========
         async function uploadContent() {
+            hideError();
+            
             if (uploadType === 'file' && currentFile) {
                 await uploadFile();
             } else if (uploadType === 'text') {
@@ -814,90 +837,118 @@
 
         async function uploadFile() {
             if (!currentFile) return;
-
+            
             const formData = new FormData();
             formData.append('file', currentFile);
-
+            
             const progressDiv = document.getElementById('uploadProgress');
             const progressBar = document.getElementById('progressBar');
             const progressPercent = document.getElementById('progressPercent');
             const progressStatus = document.getElementById('progressStatus');
             const progressDetails = document.getElementById('progressDetails');
             const uploadBtn = document.getElementById('uploadBtn');
-
+            
             progressDiv.classList.remove('hidden');
             progressDiv.classList.add('slide-in');
             uploadBtn.disabled = true;
             uploadBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin mr-2"></i>Uploading...';
-
+            
+            const startTime = Date.now();
+            
             try {
                 const xhr = new XMLHttpRequest();
-
+                
                 xhr.upload.addEventListener('progress', (e) => {
                     if (e.lengthComputable) {
                         const percent = Math.round((e.loaded / e.total) * 100);
                         progressBar.style.width = percent + '%';
                         progressPercent.textContent = percent + '%';
                         progressStatus.innerHTML = `<i class="fas fa-circle-notch fa-spin text-indigo-500 mr-2"></i>Uploading ${currentFile.name}`;
-                        progressDetails.textContent = `${formatSize(e.loaded)} / ${formatSize(e.total)} • ${formatSpeed(e.loaded, e.total, Date.now())}`;
+                        
+                        const elapsed = (Date.now() - startTime) / 1000;
+                        const speed = e.loaded / elapsed;
+                        progressDetails.textContent = `${formatSize(e.loaded)} / ${formatSize(e.total)} • ${formatSize(speed)}/s`;
                     }
                 });
-
-                const response = await new Promise((resolve, reject) => {
-                    xhr.addEventListener('load', () => {
-                        if (xhr.status >= 200 && xhr.status < 300) {
-                            resolve(xhr.response);
-                        } else {
-                            reject(new Error(`HTTP ${xhr.status}: ${xhr.statusText}`));
+                
+                xhr.addEventListener('load', () => {
+                    if (xhr.status >= 200 && xhr.status < 300) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            if (data.success) {
+                                currentCode = data.code;
+                                showSuccess();
+                            } else {
+                                throw new Error(data.error || 'Upload failed');
+                            }
+                        } catch (e) {
+                            showError('Server response error: ' + e.message);
+                            resetUploadState();
                         }
-                    });
-                    xhr.addEventListener('error', () => reject(new Error('Upload failed')));
-                    xhr.open('POST', `${API_BASE}/api/upload`);
-                    xhr.send(formData);
+                    } else {
+                        let errorMsg = `Server error: ${xhr.status}`;
+                        try {
+                            const errorData = JSON.parse(xhr.responseText);
+                            if (errorData.error) errorMsg = errorData.error;
+                        } catch (e) {}
+                        showError(errorMsg);
+                        resetUploadState();
+                    }
                 });
-
-                const data = JSON.parse(response);
-
-                if (data.success) {
-                    currentCode = data.code;
-                    showSuccess();
-                } else {
-                    throw new Error(data.error || 'Upload failed');
-                }
+                
+                xhr.addEventListener('error', () => {
+                    showError('Network error. Check your connection and try again.');
+                    resetUploadState();
+                });
+                
+                xhr.addEventListener('timeout', () => {
+                    showError('Upload timed out. File may be too large or connection is slow.');
+                    resetUploadState();
+                });
+                
+                xhr.open('POST', `${API_BASE}/api/upload`);
+                xhr.timeout = 300000; // 5 minutes timeout for large files
+                xhr.send(formData);
+                
             } catch (err) {
-                showToast('Upload failed: ' + err.message, 'error');
-                shakeElement(uploadBtn);
-                progressDiv.classList.add('hidden');
-                uploadBtn.disabled = false;
-                uploadBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Upload & Get Code';
+                showError('Upload failed: ' + err.message);
+                resetUploadState();
             }
         }
 
         async function uploadText() {
             const text = document.getElementById('textInput').value.trim();
-            if (!text) return showToast('Please enter some text', 'error');
-
+            if (!text) {
+                showError('Please enter some text');
+                return;
+            }
+            
             const progressDiv = document.getElementById('uploadProgress');
             const progressBar = document.getElementById('progressBar');
             const progressPercent = document.getElementById('progressPercent');
             const progressStatus = document.getElementById('progressStatus');
             const uploadBtn = document.getElementById('uploadBtn');
-
+            
             progressDiv.classList.remove('hidden');
             progressBar.style.width = '50%';
             progressPercent.textContent = '50%';
             progressStatus.innerHTML = '<i class="fas fa-circle-notch fa-spin text-indigo-500 mr-2"></i>Saving text...';
             uploadBtn.disabled = true;
-
+            
             try {
                 const response = await fetch(`${API_BASE}/api/upload-text`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ text })
                 });
-
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || `Server error: ${response.status}`);
+                }
+                
                 const data = await response.json();
-
+                
                 if (data.success) {
                     progressBar.style.width = '100%';
                     progressPercent.textContent = '100%';
@@ -907,40 +958,46 @@
                     throw new Error(data.error || 'Upload failed');
                 }
             } catch (err) {
-                showToast('Upload failed: ' + err.message, 'error');
-                shakeElement(uploadBtn);
-                progressDiv.classList.add('hidden');
-                uploadBtn.disabled = false;
-                uploadBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Upload & Get Code';
+                showError('Upload failed: ' + err.message);
+                resetUploadState();
             }
         }
 
+        function resetUploadState() {
+            document.getElementById('uploadProgress').classList.add('hidden');
+            document.getElementById('progressBar').style.width = '0%';
+            document.getElementById('uploadBtn').disabled = false;
+            document.getElementById('uploadBtn').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Upload & Get Code';
+        }
+
         function showSuccess() {
-            document.getElementById('uploadArea').classList.add('hidden');
+            document.getElementById('fileUploadArea').classList.add('hidden');
             document.getElementById('textUploadArea').classList.add('hidden');
             document.getElementById('uploadTypeSelector').classList.add('hidden');
             document.getElementById('uploadProgress').classList.add('hidden');
-
+            document.getElementById('uploadError').classList.add('hidden');
+            
             const successDiv = document.getElementById('uploadSuccess');
             successDiv.classList.remove('hidden');
             successDiv.classList.add('slide-in');
-
+            
             document.getElementById('codeDisplay').textContent = currentCode;
         }
 
         function resetUpload() {
-            document.getElementById('uploadArea').classList.remove('hidden');
+            document.getElementById('fileUploadArea').classList.remove('hidden');
             document.getElementById('uploadTypeSelector').classList.remove('hidden');
             document.getElementById('uploadSuccess').classList.add('hidden');
             document.getElementById('uploadProgress').classList.add('hidden');
+            document.getElementById('uploadError').classList.add('hidden');
             document.getElementById('progressBar').style.width = '0%';
             document.getElementById('fileInput').value = '';
             document.getElementById('textInput').value = '';
             document.getElementById('uploadBtn').disabled = true;
             document.getElementById('uploadBtn').innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Upload & Get Code';
-
+            
             clearPreview();
-            updateTextStats();
+            clearText();
             setUploadType('file');
             currentCode = '';
         }
@@ -948,6 +1005,8 @@
         function copyCode() {
             navigator.clipboard.writeText(currentCode).then(() => {
                 showToast('Code copied to clipboard!');
+            }).catch(() => {
+                showToast('Failed to copy code', 'error');
             });
         }
 
@@ -957,7 +1016,7 @@
                 text: `Download my file with code: ${currentCode}`,
                 url: window.location.href
             };
-
+            
             if (navigator.share) {
                 try {
                     await navigator.share(shareData);
@@ -977,32 +1036,37 @@
                 shakeElement(document.getElementById('codeInput'));
                 return;
             }
-
+            
             document.getElementById('downloadForm').classList.add('hidden');
-
+            
             try {
                 const response = await fetch(`${API_BASE}/api/retrieve/${code}`);
+                
+                if (!response.ok) {
+                    const errorData = await response.json().catch(() => ({}));
+                    throw new Error(errorData.error || 'Not found');
+                }
+                
                 const data = await response.json();
-
+                
                 if (data.success) {
                     retrievedFileData = data.file;
                     retrievedFileData.code = code;
-
+                    
                     document.getElementById('fileFound').classList.remove('hidden');
                     document.getElementById('fileFound').classList.add('slide-in');
                     document.getElementById('fileNotFound').classList.add('hidden');
-
+                    
                     document.getElementById('foundFileName').textContent = data.file.name;
                     document.getElementById('foundFileSize').textContent = formatSize(data.file.size);
                     document.getElementById('foundFileDate').innerHTML = `<i class="far fa-clock mr-1"></i>Uploaded: ${new Date(data.file.uploadedAt).toLocaleString()}`;
                     document.getElementById('foundFileType').innerHTML = `<i class="far fa-file mr-1"></i>Type: ${data.file.type || 'Unknown'}`;
                     document.getElementById('foundDownloadsLeft').textContent = `${data.file.downloadsLeft} left`;
-
-                    // Set icon
+                    
                     const iconDiv = document.getElementById('foundFileIcon');
                     iconDiv.className = `file-type-icon ${getFileTypeClass(data.file.name)}`;
                     iconDiv.innerHTML = `<i class="fas ${getFileTypeIcon(data.file.name)}"></i>`;
-
+                    
                     // Show preview
                     const previewDiv = document.getElementById('foundPreview');
                     const imgEl = document.getElementById('foundPreviewImg');
@@ -1010,13 +1074,13 @@
                     const textDiv = document.getElementById('foundPreviewText');
                     const textContent = document.getElementById('foundTextContent');
                     const copyBtn = document.getElementById('copyTextBtn');
-
+                    
                     previewDiv.classList.add('hidden');
                     imgEl.style.display = 'none';
                     videoEl.style.display = 'none';
                     textDiv.classList.add('hidden');
                     copyBtn.classList.add('hidden');
-
+                    
                     if (data.file.type && data.file.type.startsWith('image/')) {
                         previewDiv.classList.remove('hidden');
                         imgEl.style.display = 'block';
@@ -1025,12 +1089,11 @@
                         previewDiv.classList.remove('hidden');
                         videoEl.style.display = 'block';
                         videoEl.src = `${API_BASE}/api/download/${code}?preview=1`;
-                    } else if (data.file.type === 'text/plain' || data.file.name === 'message.txt') {
-                        // For text files, fetch and display content
+                    } else if (data.file.isText || data.file.name === 'message.txt') {
                         previewDiv.classList.remove('hidden');
                         textDiv.classList.remove('hidden');
                         copyBtn.classList.remove('hidden');
-
+                        
                         try {
                             const textResponse = await fetch(`${API_BASE}/api/download/${code}?preview=1`);
                             const text = await textResponse.text();
@@ -1040,7 +1103,7 @@
                         }
                     }
                 } else {
-                    throw new Error(data.error);
+                    throw new Error(data.error || 'Not found');
                 }
             } catch (err) {
                 document.getElementById('fileFound').classList.add('hidden');
@@ -1053,17 +1116,16 @@
         function downloadRetrieved() {
             if (!retrievedFileData) return;
             const code = retrievedFileData.code;
-
+            
             const a = document.createElement('a');
             a.href = `${API_BASE}/api/download/${code}`;
             a.download = retrievedFileData.name;
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
-
+            
             showToast('Download started!');
-
-            // Update download count display
+            
             const leftEl = document.getElementById('foundDownloadsLeft');
             if (leftEl) {
                 const current = parseInt(leftEl.textContent);
@@ -1081,6 +1143,8 @@
             if (textContent) {
                 navigator.clipboard.writeText(textContent.textContent).then(() => {
                     showToast('Text copied to clipboard!');
+                }).catch(() => {
+                    showToast('Failed to copy text', 'error');
                 });
             }
         }
@@ -1120,13 +1184,6 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        function formatSpeed(loaded, total, startTime) {
-            const elapsed = (Date.now() - startTime) / 1000;
-            if (elapsed < 0.1) return 'calculating...';
-            const speed = loaded / elapsed;
-            return formatSize(speed) + '/s';
-        }
-
         function shakeElement(el) {
             el.classList.add('shake');
             setTimeout(() => el.classList.remove('shake'), 500);
@@ -1136,9 +1193,9 @@
             const toast = document.getElementById('toast');
             const msgEl = document.getElementById('toastMsg');
             const iconDiv = document.getElementById('toastIcon');
-
+            
             msgEl.textContent = msg;
-
+            
             if (type === 'error') {
                 iconDiv.className = 'w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center';
                 iconDiv.innerHTML = '<i class="fas fa-exclamation text-red-400"></i>';
@@ -1146,18 +1203,19 @@
                 iconDiv.className = 'w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center';
                 iconDiv.innerHTML = '<i class="fas fa-check text-green-400"></i>';
             }
-
+            
             toast.classList.add('show');
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // Enter key on code input
         document.getElementById('codeInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') retrieveFile();
         });
-
-        // Text input listener
-        document.getElementById('textInput').addEventListener('input', updateTextStats);
     </script>
 </body>
-</html>
+</html>'''
+
+with open('/mnt/agents/output/index.html', 'w') as f:
+    f.write(html_content)
+
+print("✅ index.html FIXED with proper error handling")
